@@ -234,7 +234,7 @@ function App() {
     if (activeTool === 'image-processor') return <ImageProcessor onBack={() => setActiveTool(null)} />
     if (activeTool === 'pdf-compressor') return <PDFCompressor onBack={() => setActiveTool(null)} />
     if (TOOLS.find(t => t.id === activeTool)) {
-      return <PDFConverter mode={activeTool} onBack={() => setActiveTool(null)} />
+      return <PDFConverter toolId={activeTool} onBack={() => setActiveTool(null)} />
     }
     return null
   }
