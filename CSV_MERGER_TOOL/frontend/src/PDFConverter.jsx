@@ -133,7 +133,9 @@ function PDFConverter({ toolId, onBack }) {
         <div className="glass-card p-12 text-center rounded-[3rem] border border-slate-100 bg-white/60">
            <AlertCircle className="w-16 h-16 text-slate-300 mx-auto mb-6" />
            <h2 className="text-2xl font-black text-slate-900 mb-2 uppercase italic">Synthesis Node Offline</h2>
-           <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">This conversion path is currently under calibration.</p>
+           <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">
+             The tool identity "{toolId || 'Unknown'}" is currently under calibration.
+           </p>
         </div>
       </div>
     )

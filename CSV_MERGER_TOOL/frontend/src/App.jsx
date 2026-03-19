@@ -230,13 +230,14 @@ function App() {
   )
 
   const renderActiveTool = () => {
-    if (activeTool === 'csv-merger') return <CSVMerger onBack={() => setActiveTool(null)} />
-    if (activeTool === 'image-processor') return <ImageProcessor onBack={() => setActiveTool(null)} />
-    if (activeTool === 'pdf-compressor') return <PDFCompressor onBack={() => setActiveTool(null)} />
-    if (TOOLS.find(t => t.id === activeTool)) {
-      return <PDFConverter toolId={activeTool} onBack={() => setActiveTool(null)} />
+    switch (activeTool) {
+      case 'csv-merger': return <CSVMerger onBack={() => setActiveTool(null)} />
+      case 'image-processor': return <ImageProcessor onBack={() => setActiveTool(null)} />
+      case 'pdf-compressor': return <PDFCompressor onBack={() => setActiveTool(null)} />
+      default:
+        // Use PDFConverter for all others - its internal gate will handle missing configs
+        return <PDFConverter toolId={activeTool} onBack={() => setActiveTool(null)} />
     }
-    return null
   }
 
   return (
@@ -254,11 +255,9 @@ function App() {
               animate={{ scale: 1, y: 0 }}
               className="max-w-xl w-full"
             >
-              <img 
-                src="file:///C:/Users/marot/.gemini/antigravity/brain/6bacdea7-68e7-4084-8cf0-c4a7c2610f22/media__1773954299485.png" 
-                alt="Server Error Illustration" 
-                className="w-full h-auto rounded-[3.5rem] mb-12"
-              />
+              <div className="w-full h-48 rounded-[3.5rem] mb-12 bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-200">
+                <AlertCircle className="w-16 h-16 text-slate-300" />
+              </div>
               <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter italic mb-4">Core Engine Offline</h2>
               <p className="text-slate-500 font-bold text-lg mb-12">The synthesis core is in deep sleep. We've notified the architecture team.</p>
               
