@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Light Mode Glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+}
+
+.premium-gradient-text {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+  border: 2px solid #f8fafc;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.1); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s infinite;
+}
+
+/* Selection */
+::selection {
+  background: #10b981;
+  color: white;
+}
