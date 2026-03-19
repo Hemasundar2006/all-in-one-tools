@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const API_BASE_URL = 'http://localhost:8000'
+const API_BASE_URL = 'https://all-in-one-tools-iz5e.onrender.com'
 
 function PDFCompressor({ onBack }) {
   const [file, setFile] = useState(null)
@@ -148,10 +148,10 @@ function PDFCompressor({ onBack }) {
                     </div>
                     <div className="min-w-0">
                       <h4 className="text-sm md:text-base font-black text-white truncate italic">{file.name}</h4>
-                      <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                      <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mt-2 flex items-center gap-2">
                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></div>
                          {(file.size / 1024 / 1024).toFixed(2)} MB • READY
-                      </p>
+                      </div>
                     </div>
                   </div>
                   <button onClick={() => setFile(null)} disabled={isProcessing} className="p-4 text-slate-400 hover:text-white transition-colors">

@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const API_BASE_URL = 'http://localhost:8000'
+const API_BASE_URL = 'https://all-in-one-tools-iz5e.onrender.com'
 
 const UNITS = ['PX', 'INCH', 'CM', 'MM']
 const DPI = 96
@@ -256,14 +256,49 @@ function ImageProcessor({ onBack }) {
                 </div>
               </div>
 
-              <button 
-                onClick={handleDownload}
-                disabled={!file || isProcessing}
-                className="w-full py-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-300 disabled:cursor-not-allowed rounded-3xl flex items-center justify-center gap-4 text-white font-black text-xl uppercase tracking-[0.3em] shadow-2xl shadow-emerald-100 transition-all active:scale-[0.98]"
-              >
-                {isProcessing ? <Loader2 className="w-7 h-7 animate-spin" /> : <Download className="w-7 h-7" />}
-                Process Asset
-              </button>
+                <div className="flex flex-col gap-6 md:gap-4">
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-4 text-red-700">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <p className="font-bold text-[10px] uppercase tracking-widest">{error}</p>
+                      </motion.div>
+                    )}
+                    {success && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-4 text-emerald-800">
+                        <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                        <p className="font-black text-[10px] uppercase tracking-[0.2em]">Synthesis Complete • Optimized Asset Exported</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <button 
+                    onClick={handleDownload}
+                    disabled={!file || isProcessing}
+                    className="w-full relative group"
+                  >
+                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] blur opacity-25 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="relative py-8 md:py-10 bg-slate-900 leading-none rounded-[2.5rem] flex items-center justify-center gap-6 text-white overflow-hidden transition-all duration-500">
+                      {isProcessing ? (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 animate-pulse"></div>
+                          <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }} className="relative w-12 h-12 flex items-center justify-center">
+                             <div className="absolute inset-0 border-4 border-emerald-500/20 rounded-full"></div>
+                             <div className="absolute inset-0 border-4 border-transparent border-t-emerald-500 rounded-full"></div>
+                             <ImageIcon className="w-5 h-5 text-emerald-400" />
+                          </motion.div>
+                          <span className="text-2xl font-black uppercase tracking-[0.4em] animate-pulse italic">Processing</span>
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-10 h-10 text-emerald-500" />
+                          <span className="text-2xl font-black uppercase tracking-[0.4em] italic">Execute Core</span>
+                          <div className="absolute right-10 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_15px_#10b981] group-hover:scale-150 transition-transform"></div>
+                        </>
+                      )}
+                    </div>
+                  </button>
+                </div>
             </div>
           </div>
 

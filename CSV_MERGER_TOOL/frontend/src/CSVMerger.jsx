@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const API_BASE_URL = 'http://localhost:8000'
+const API_BASE_URL = 'https://all-in-one-tools-iz5e.onrender.com'
 
 function CSVMerger({ onBack }) {
   const [files, setFiles] = useState([])
@@ -121,16 +121,49 @@ function CSVMerger({ onBack }) {
                   ))}
                 </div>
 
-                <div className="flex flex-col gap-4">
-                  {error && <div className="p-5 bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-widest rounded-2xl border border-red-100 flex items-center gap-3"><AlertCircle className="w-4 h-4" /> {error}</div>}
-                  {success && <div className="p-5 bg-emerald-50 text-emerald-800 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border border-emerald-100 flex items-center gap-3"><CheckCircle2 className="w-4 h-4" /> Dataset Synthesis Successful</div>}
-                  
-                  <button onClick={handleMerge} disabled={isMerging} className="w-full py-6 md:py-8 bg-slate-900 hover:bg-black text-white rounded-3xl font-black text-xl uppercase tracking-[0.3em] flex items-center justify-center gap-4 shadow-2xl active:scale-[0.98] transition-all">
-                    {isMerging ? <Loader2 className="w-8 h-8 animate-spin" /> : <Database className="w-8 h-8" />}
-                    Execute Merge
+                <div className="flex flex-col gap-6 md:gap-4 mt-8">
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-4 text-red-700">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <p className="font-bold text-[10px] uppercase tracking-widest">{error}</p>
+                      </motion.div>
+                    )}
+                    {success && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-4 text-emerald-800">
+                        <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                        <p className="font-black text-[10px] uppercase tracking-[0.2em]">Synthesis Complete • Dataset Exported</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <button 
+                    onClick={handleMerge}
+                    disabled={isMerging}
+                    className="w-full relative group"
+                  >
+                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] blur opacity-25 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="relative py-8 md:py-10 bg-slate-900 leading-none rounded-[2.5rem] flex items-center justify-center gap-6 text-white overflow-hidden transition-all duration-500">
+                      {isMerging ? (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 animate-pulse"></div>
+                          <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }} className="relative w-12 h-12 flex items-center justify-center">
+                             <div className="absolute inset-0 border-4 border-emerald-500/20 rounded-full"></div>
+                             <div className="absolute inset-0 border-4 border-transparent border-t-emerald-500 rounded-full"></div>
+                             <Database className="w-5 h-5 text-emerald-400" />
+                          </motion.div>
+                          <span className="text-2xl font-black uppercase tracking-[0.4em] animate-pulse italic">Merging</span>
+                        </>
+                      ) : (
+                        <>
+                          <Database className="w-10 h-10 text-emerald-500" />
+                          <span className="text-2xl font-black uppercase tracking-[0.4em] italic">Execute Core</span>
+                          <div className="absolute right-10 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_15px_#10b981] group-hover:scale-150 transition-transform"></div>
+                        </>
+                      )}
+                    </div>
                   </button>
-                  
-                  <button onClick={() => setFiles([])} className="text-[10px] font-black text-slate-300 hover:text-red-500 uppercase tracking-widest transition-colors">Clear All Objects</button>
+                  <button onClick={() => setFiles([])} className="text-[10px] font-black text-slate-300 hover:text-red-500 uppercase tracking-widest transition-colors mt-4">Clear All Objects</button>
                 </div>
               </motion.div>
             )}

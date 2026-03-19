@@ -16,11 +16,12 @@ import {
   Image as ImageIcon,
   Trash2,
   Plus,
-  Zap
+  Zap,
+  Grid
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const API_BASE_URL = 'http://localhost:8000'
+const API_BASE_URL = 'https://all-in-one-tools-iz5e.onrender.com'
 
 const CONVERSION_CONFIG = {
   'doc-to-pdf': {
@@ -76,6 +77,34 @@ const CONVERSION_CONFIG = {
     icon: FileDigit,
     accent: 'emerald',
     description: 'Extract pages from PDF files as high-quality images.'
+  },
+  'ppt-to-images': {
+    title: 'PPT to IMG',
+    inputExt: ['.pptx', '.ppt'],
+    outputExt: '.jpg',
+    endpoint: '/ppt-to-images',
+    icon: ImageIcon,
+    accent: 'emerald',
+    description: 'Convert PowerPoint slides into high-resolution JPG images.'
+  },
+  'images-to-ppt': {
+    title: 'IMG to PPT',
+    inputExt: ['.jpg', '.jpeg', '.png'],
+    outputExt: '.pptx',
+    endpoint: '/images-to-ppt',
+    icon: Grid,
+    accent: 'emerald',
+    description: 'Create individual slides from a batch of images.',
+    multi: true
+  },
+  'pdf-to-ppt': {
+    title: 'PDF to PPT',
+    inputExt: ['.pdf'],
+    outputExt: '.pptx',
+    endpoint: '/pdf-to-ppt',
+    icon: Presentation,
+    accent: 'emerald',
+    description: 'Transform PDF pages into a PowerPoint presentation.'
   }
 }
 
@@ -85,6 +114,7 @@ function PDFConverter({ toolId, onBack }) {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
   const fileInputRef = useRef(null)
+  
   const config = CONVERSION_CONFIG[toolId]
 
   useEffect(() => {
@@ -92,6 +122,22 @@ function PDFConverter({ toolId, onBack }) {
     setError(null)
     setSuccess(false)
   }, [toolId])
+
+  // Safety guard for missing config
+  if (!config) {
+    return (
+      <div className="min-h-screen p-4 md:p-12 flex flex-col items-center bg-white text-slate-900 pt-6">
+        <button onClick={onBack} className="mb-8 flex items-center gap-2 text-slate-400 hover:text-emerald-700 font-black text-[10px] uppercase tracking-[0.2em] self-start">
+          <ArrowLeft className="w-5 h-5" /> Back to Hub
+        </button>
+        <div className="glass-card p-12 text-center rounded-[3rem] border border-slate-100 bg-white/60">
+           <AlertCircle className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+           <h2 className="text-2xl font-black text-slate-900 mb-2 uppercase italic">Synthesis Node Offline</h2>
+           <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">This conversion path is currently under calibration.</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files)
@@ -133,10 +179,10 @@ function PDFConverter({ toolId, onBack }) {
     setSuccess(false)
 
     try {
-      // For now, we handle one by one if not a multi-endpoint
-      for (const file of files) {
+      if (config.multi) {
+        // Multi-file endpoints take all files together
         const formData = new FormData()
-        formData.append('file', file)
+        files.forEach(f => formData.append('files', f))
         
         const response = await axios.post(`${API_BASE_URL}${config.endpoint}`, formData, {
           responseType: 'blob',
@@ -147,11 +193,31 @@ function PDFConverter({ toolId, onBack }) {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        const outputName = file.name.split('.')[0] + config.outputExt
-        link.setAttribute('download', outputName)
+        link.setAttribute('download', `synthesis_output${config.outputExt}`)
         document.body.appendChild(link)
         link.click()
         link.remove()
+      } else {
+        // Single-file endpoints handle one by one
+        for (const file of files) {
+          const formData = new FormData()
+          formData.append('file', file)
+          
+          const response = await axios.post(`${API_BASE_URL}${config.endpoint}`, formData, {
+            responseType: 'blob',
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+
+          const blob = new Blob([response.data])
+          const url = window.URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          const outputName = file.name.split('.')[0] + config.outputExt
+          link.setAttribute('download', outputName)
+          document.body.appendChild(link)
+          link.click()
+          link.remove()
+        }
       }
       setSuccess(true)
       setIsProcessing(false)
@@ -160,7 +226,7 @@ function PDFConverter({ toolId, onBack }) {
       if (err.response?.status === 500 && window.setAllInOneError) {
         window.setAllInOneError(true)
       } else {
-        setError("Synthesis failed. Check if local backend is active.")
+        setError("Synthesis failed. Check if production server is healthy.")
       }
       setIsProcessing(false)
     }

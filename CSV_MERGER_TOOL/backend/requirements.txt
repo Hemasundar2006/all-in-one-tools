@@ -5,11 +5,9 @@ python-multipart
 python-dotenv
 aiofiles
 pdf2docx
-docx2pdf
 python-docx
-pywin32
 Pillow
 img2pdf
 PyMuPDF
-tabula-py
-jpype1
+pywin32; sys_platform == 'win32'
+docx2pdf; sys_platform == 'win32'
