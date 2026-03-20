@@ -21,7 +21,9 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const API_BASE_URL = 'https://all-in-one-tools-iz5e.onrender.com'
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:8000' 
+  : 'https://all-in-one-tools-iz5e.onrender.com'
 
 const CONVERSION_CONFIG = {
   'doc-to-pdf': {
