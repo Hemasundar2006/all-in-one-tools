@@ -95,8 +95,7 @@ async def pdf_to_doc_endpoint(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF to Word failed: {str(e)}")
     finally:
-        if pdf_path and os.path.exists(pdf_path): os.remove(pdf_path)
-        if doc_path and os.path.exists(doc_path): os.remove(doc_path)
+        clean_tmp(pdf_path, doc_path)
 
 @app.post("/doc-to-pdf")
 async def doc_to_pdf_endpoint(file: UploadFile = File(...)):
@@ -134,8 +133,50 @@ async def doc_to_pdf_endpoint(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Word to PDF failed: {str(e)}")
     finally:
         pythoncom.CoUninitialize()
-        if doc_path and os.path.exists(doc_path): os.remove(doc_path)
-        if pdf_path and os.path.exists(pdf_path): os.remove(pdf_path)
+        clean_tmp(doc_path, pdf_path)
+
+@app.post("/doc-to-image")
+async def doc_to_image_endpoint(file: UploadFile = File(...)):
+    if not WIN32_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Microsoft Word Engine requires Windows Environment.")
+    
+    pythoncom.CoInitialize()
+    word = None
+    doc = None
+    doc_path = None
+    pdf_path = None
+    try:
+        ext = os.path.splitext(file.filename)[1]
+        with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp_doc:
+            content = await file.read()
+            tmp_doc.write(content)
+            doc_path = tmp_doc.name
+        
+        pdf_path = doc_path + ".pdf"
+        word = win32com.client.Dispatch("Word.Application")
+        word.Visible = False
+        doc = word.Documents.Open(doc_path)
+        doc.SaveAs(pdf_path, FileFormat=17) # 17 = wdFormatPDF
+        doc.Close()
+        word.Quit()
+        
+        # Now convert PDF to Image
+        pdf_doc = fitz.open(pdf_path)
+        pix = pdf_doc.load_page(0).get_pixmap()
+        img_data = pix.tobytes("jpg")
+        pdf_doc.close()
+        
+        return StreamingResponse(
+            io.BytesIO(img_data),
+            media_type="image/jpeg",
+            headers={"Content-Disposition": f"attachment; filename={os.path.splitext(file.filename)[0]}.jpg"}
+        )
+    except Exception as e:
+        if word: word.Quit()
+        raise HTTPException(status_code=500, detail=f"Word to Image failed: {str(e)}")
+    finally:
+        pythoncom.CoUninitialize()
+        clean_tmp(doc_path, pdf_path)
 
 @app.post("/image-to-pdf")
 async def image_to_pdf_endpoint(file: UploadFile = File(...)):

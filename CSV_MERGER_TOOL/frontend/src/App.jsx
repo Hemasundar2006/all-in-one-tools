@@ -140,6 +140,15 @@ const TOOLS = [
     color: 'emerald',
     status: 'active',
     category: 'Conversion'
+  },
+  {
+    id: 'doc-to-image',
+    title: 'Word to IMG',
+    description: 'Convert Word document pages into high-resolution JPG images.',
+    icon: ImageIcon,
+    color: 'emerald',
+    status: 'active',
+    category: 'Extraction'
   }
 ]
 
@@ -158,7 +167,7 @@ const MENU_CATEGORIES = [
   },
   {
     name: 'Extraction',
-    tools: ['pdf-to-doc', 'pdf-to-image', 'csv-merger']
+    tools: ['pdf-to-doc', 'pdf-to-image', 'doc-to-image', 'csv-merger']
   }
 ]
 

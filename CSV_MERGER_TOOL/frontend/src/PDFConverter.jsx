@@ -42,6 +42,15 @@ const CONVERSION_CONFIG = {
     accent: 'emerald',
     description: 'Convert PDF files back into editable Word documents.'
   },
+  'doc-to-image': {
+    title: 'Word to IMG',
+    inputExt: ['.docx', '.doc'],
+    outputExt: '.jpg',
+    endpoint: '/doc-to-image',
+    icon: ImageIcon,
+    accent: 'emerald',
+    description: 'Extract the first page of your Word documents as high-quality JPG images.'
+  },
   'ppt-to-pdf': {
     title: 'PPT to PDF',
     inputExt: ['.pptx', '.ppt'],
